@@ -52,16 +52,18 @@ var map = d3.select(".dashboard .map")
 			}
 			heading.text(text);
 		}
-	}),
-	counter = 0;
+	});
 
 setInterval(function() {
-	if (counter % 2 === 0) {
-		var provinces = Object.keys(canada.provinces),
-			province = provinces[Math.floor(Math.random() * provinces.length)];
+	var provinces = Object.keys(canada.provinces),
+		provincesLength = provinces.length,
+		show = Math.floor(Math.random() * provincesLength + 1),
+		province;
+
+	if (show < provincesLength){
+		province = provinces[show];
 		canada.provinces[province].zoom();
 	} else {
 		canada.zoom();
 	}
-	counter++;
 }, 2000);

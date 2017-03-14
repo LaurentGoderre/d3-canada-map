@@ -5,10 +5,13 @@ function getCanadaMap(svg, settings) {
 			provinces: {}
 		},
 		zoom = function(province) {
-			var boundingBox, provincePath;
+			var transition = d3.transition()
+			 		.duration(1000),
+				boundingBox, provincePath;
+
+			this.svg.selectAll(".zoomed").classed("zoomed", false);
 
 			if (province) {
-
 				if (this.provinces[province]._bBox) {
 					provincePath = this.provinces[province].obj;
 					boundingBox = this.provinces[province]._bBox;
@@ -20,10 +23,8 @@ function getCanadaMap(svg, settings) {
 				this.obj.classed("zoomed", true);
 			} else {
 				boundingBox = this._bBox;
-
-				this.svg.selectAll(".zoomed").classed("zoomed", false);
 			}
-			svg.attr("viewBox", [boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height].join(" "));
+			svg.transition(transition).attr("viewBox", [boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height].join(" "));
 
 			if (this.settings.zoomCallback && typeof this.settings.zoomCallback === "function") {
 				this.settings.zoomCallback(province);

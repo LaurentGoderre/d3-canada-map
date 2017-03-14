@@ -2,8 +2,9 @@
 	fill: #94a6b2;
 	stroke: #fff;
 	stroke-width: 0.03;
+	transition: opacity 1s ease-in-out;
 }
 
 .canada-map.zoomed path:not(.zoomed) {
-	display: none;
+	opacity: 0;
 }
