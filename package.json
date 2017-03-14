@@ -1,0 +1,22 @@
+{
+  "name": "d3-canada-map",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LaurentGoderre/d3-canada-map.git"
+  },
+  "author": "Laurent Goderre",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LaurentGoderre/d3-canada-map/issues"
+  },
+  "homepage": "https://github.com/LaurentGoderre/d3-canada-map#readme",
+  "devDependencies": {
+    "eslint": "^3.17.1",
+  }
+}

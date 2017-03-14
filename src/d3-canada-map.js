@@ -1,4 +1,4 @@
-function getCanadaMap(svg, settings) {
+window.getCanadaMap = function (svg, settings) {
 	var rtnObj = {
 			settings: settings || {},
 			svg: svg,
@@ -6,7 +6,7 @@ function getCanadaMap(svg, settings) {
 		},
 		zoom = function(province) {
 			var transition = d3.transition()
-			 		.duration(1000),
+					.duration(1000),
 				boundingBox, provincePath;
 
 			this.svg.selectAll(".zoomed").classed("zoomed", false);
@@ -32,7 +32,7 @@ function getCanadaMap(svg, settings) {
 		};
 
 	if (settings.provinces && typeof settings.provinces === "string") {
-		settings.provinces = [provinces]
+		settings.provinces = [settings.provinces];
 	}
 
 	d3.json("data/canada.json", function(error, canada) {
@@ -41,11 +41,11 @@ function getCanadaMap(svg, settings) {
 			provincesKeys = Object.keys(canada.objects),
 			province, provinceShort, p, projection, path;
 
-			projection = settings.projection = settings.projection ||
-				d3.geoTransverseMercator()
-					.rotate([95,0]);
-			path = d3.geoPath()
-				.projection(projection);
+		projection = settings.projection = settings.projection ||
+			d3.geoTransverseMercator()
+				.rotate([95,0]);
+		path = d3.geoPath()
+			.projection(projection);
 
 		for(p = 0; p < provincesKeys.length; p += 1) {
 			province = provincesKeys[p];
@@ -60,7 +60,7 @@ function getCanadaMap(svg, settings) {
 
 				rtnObj.provinces[provinceShort] = {
 					zoom: zoom.bind(rtnObj, provinceShort)
-				}
+				};
 			}
 		}
 
@@ -72,4 +72,4 @@ function getCanadaMap(svg, settings) {
 	});
 
 	return rtnObj;
-}
+};
