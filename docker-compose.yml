@@ -1,0 +1,16 @@
+version: "2"
+services:
+    web:
+        build:
+          context: ./
+          args:
+            - http_proxy=${HTTP_PROXY}
+            - https_proxy=${HTTP_PROXY}
+            - HTTP_PROXY=${HTTP_PROXY}
+            - HTTPS_PROXY=${HTTP_PROXY}
+        image: d3-canada-map
+        volumes:
+            - ./:/home/node/app/
+        ports:
+            - "8080:8080"
+        container_name: d3-canada-map

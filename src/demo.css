@@ -1,0 +1,9 @@
+.canada-map path {
+	fill: #94a6b2;
+	stroke: #fff;
+	stroke-width: 0.03;
+}
+
+.canada-map.zoomed path:not(.zoomed) {
+	display: none;
+}
