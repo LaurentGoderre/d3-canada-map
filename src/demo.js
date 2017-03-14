@@ -62,7 +62,7 @@ var map = d3.select(".dashboard .map")
 setInterval(function() {
 	var provinces = Object.keys(canada.provinces),
 		provincesLength = provinces.length,
-		show = Math.floor(Math.random() * provincesLength + 1),
+		show = Math.floor(Math.random() * (provincesLength + 1)),
 		province;
 
 	if (show < provincesLength){
