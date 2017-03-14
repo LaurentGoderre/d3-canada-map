@@ -3,7 +3,12 @@ var map = d3.select(".dashboard .map")
 	heading = d3.select(".dashboard h2"),
 	canada = window.getCanadaMap(map, {
 		/*provinces: ["ON", "QC"],*/
-		zoomCallback: function(province) {
+	})
+		.on("loaded", function() {
+			window.console.log("loaded");
+			window.console.log(this);
+		})
+		.on("zoom", function(province) {
 			var text = "Canada";
 
 			if (province){
@@ -51,8 +56,8 @@ var map = d3.select(".dashboard .map")
 				}
 			}
 			heading.text(text);
-		}
-	});
+			window.console.log("Zoom:" + text);
+		});
 
 setInterval(function() {
 	var provinces = Object.keys(canada.provinces),

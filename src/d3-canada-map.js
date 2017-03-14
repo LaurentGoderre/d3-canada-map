@@ -1,9 +1,6 @@
-window.getCanadaMap = function (svg, settings) {
-	var rtnObj = {
-			settings: settings || {},
-			svg: svg,
-			provinces: {}
-		},
+/* exported getCanadaMap */
+this.getCanadaMap = function(svg, settings) {
+	var dispatch = d3.dispatch("loaded", "zoom"),
 		zoom = function(province) {
 			var transition = d3.transition()
 					.duration(1000),
@@ -26,10 +23,22 @@ window.getCanadaMap = function (svg, settings) {
 			}
 			svg.transition(transition).attr("viewBox", [boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height].join(" "));
 
-			if (this.settings.zoomCallback && typeof this.settings.zoomCallback === "function") {
-				this.settings.zoomCallback(province);
-			}
-		};
+			dispatch.call("zoom", this, province);
+
+		},
+		rtnObj;
+
+	settings = settings || {};
+
+	rtnObj = {
+		settings: settings,
+		svg: svg,
+		provinces: {},
+		on: function(event, fn) {
+			dispatch.on(event, fn);
+			return this;
+		}
+	};
 
 	if (settings.provinces && typeof settings.provinces === "string") {
 		settings.provinces = [settings.provinces];
@@ -69,6 +78,8 @@ window.getCanadaMap = function (svg, settings) {
 		rtnObj.zoom = zoom.bind(rtnObj);
 
 		rtnObj.zoom();
+
+		dispatch.call("loaded");
 	});
 
 	return rtnObj;
