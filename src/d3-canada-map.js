@@ -21,10 +21,10 @@ this.getCanadaMap = function(svg, settings) {
 			} else {
 				boundingBox = this._bBox;
 			}
-			svg.transition(transition).attr("viewBox", [boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height].join(" "));
-
-			dispatch.call("zoom", this, province);
-
+			svg.transition(transition).attr("viewBox", [boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height].join(" "))
+				.on("end", function() {
+					dispatch.call("zoom", this, province);
+				});
 		},
 		rtnObj;
 
