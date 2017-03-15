@@ -44,7 +44,7 @@ this.getCanadaMap = function(svg, settings) {
 		settings.provinces = [settings.provinces];
 	}
 
-	d3.json("data/canada.json", function(error, canada) {
+	d3.json("/data/canada.json", function(error, canada) {
 		if (error) {
 			if (error instanceof Error) {
 				return dispatch.call("error", rtnObj, error);

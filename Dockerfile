@@ -1,11 +1,9 @@
-FROM node:6-alpine
+FROM node:6
 
-RUN apk add --no-cache \
-		git \
-	&& npm install -g grunt-cli bower http-server
+RUN npm install -g grunt-cli
 
 USER node
 RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
-ENTRYPOINT ["http-server"]
+ENTRYPOINT ["grunt", "connect:server"]

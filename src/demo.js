@@ -6,7 +6,6 @@ var map = d3.select(".dashboard .map")
 	})
 		.on("loaded", function() {
 			window.console.log("loaded");
-			window.console.log(this);
 		})
 		.on("zoom", function(province) {
 			var text = "Canada";

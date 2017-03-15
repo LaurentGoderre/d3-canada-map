@@ -4,6 +4,31 @@ module.exports = function(grunt) {
 	require("load-grunt-tasks")(grunt);
 
 	grunt.initConfig({
+		connect: {
+			options: {
+				base: "."
+			},
+			server: {
+				options: {
+					port: 8080,
+					keepalive: true
+				},
+			},
+			test: {
+				options: {
+					port: 8081,
+				},
+			},
+		},
+		mocha: {
+			test: {
+				options: {
+					reporter: "spec",
+					urls: ["http://localhost:8081/test/test.html"]
+				}
+			}
+		},
+
 		copy: {
 			js: {
 				files: {
@@ -23,5 +48,6 @@ module.exports = function(grunt) {
 			}
 		}
 	});
-	grunt.registerTask("default", ["copy", "uglify"]);
+	grunt.registerTask("test", ["connect:test", "mocha"]);
+	grunt.registerTask("default", ["test", "copy", "uglify"]);
 };

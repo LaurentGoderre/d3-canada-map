@@ -17,10 +17,15 @@
   },
   "homepage": "https://github.com/LaurentGoderre/d3-canada-map#readme",
   "devDependencies": {
+    "chai": "^3.5.0",
+    "d3": "^4.7.3",
     "eslint": "^3.17.1",
     "grunt": "^1.0.1",
+    "grunt-contrib-connect": "^1.0.2",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-uglify": "^2.2.0",
-    "load-grunt-tasks": "^3.5.2"
+    "grunt-mocha": "^1.0.4",
+    "load-grunt-tasks": "^3.5.2",
+    "topojson": "^2.2.0"
   }
 }
