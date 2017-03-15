@@ -1,6 +1,6 @@
 /* exported getCanadaMap */
 this.getCanadaMap = function(svg, settings) {
-	var dispatch = d3.dispatch("loaded", "zoom"),
+	var dispatch = d3.dispatch("loaded", "zoom", "error"),
 		zoom = function(province) {
 			var transition = d3.transition()
 					.duration(1000),
@@ -45,41 +45,52 @@ this.getCanadaMap = function(svg, settings) {
 	}
 
 	d3.json("data/canada.json", function(error, canada) {
-		var canadaLayer = svg.append("g")
-			.attr("class", "canada-map"),
-			provincesKeys = Object.keys(canada.objects),
-			province, provinceShort, p, projection, path;
-
-		projection = settings.projection = settings.projection ||
-			d3.geoTransverseMercator()
-				.rotate([95,0]);
-		path = d3.geoPath()
-			.projection(projection);
-
-		for(p = 0; p < provincesKeys.length; p += 1) {
-			province = provincesKeys[p];
-			provinceShort = province.substr(3);
-
-			//Filter provinces based on specified argument
-			if (!settings.provinces || settings.provinces.indexOf(provinceShort) !== -1) {
-				canadaLayer.append("path")
-					.datum(topojson.feature(canada, canada.objects[province]))
-					.attr("class", provinceShort)
-					.attr("d", path);
-
-				rtnObj.provinces[provinceShort] = {
-					zoom: zoom.bind(rtnObj, provinceShort)
-				};
+		if (error) {
+			if (error instanceof Error) {
+				return dispatch.call("error", rtnObj, error);
+			} else if (error instanceof ProgressEvent) {
+				return dispatch.call("error", rtnObj, new Error("Could not load the map file (" + error.target.status + " " + error.target.statusText + ")"));
 			}
 		}
+		try {
+			var canadaLayer = svg.append("g")
+					.attr("class", "canada-map"),
+				provincesKeys = Object.keys(canada.objects),
+				province, provinceShort, p, projection, path;
 
-		rtnObj.obj = canadaLayer;
-		rtnObj._bBox = canadaLayer.node().getBBox();
-		rtnObj.zoom = zoom.bind(rtnObj);
+			projection = settings.projection = settings.projection ||
+				d3.geoTransverseMercator()
+					.rotate([95,0]);
+			path = d3.geoPath()
+				.projection(projection);
 
-		rtnObj.zoom();
+			for(p = 0; p < provincesKeys.length; p += 1) {
+				province = provincesKeys[p];
+				provinceShort = province.substr(3);
 
-		dispatch.call("loaded");
+				//Filter provinces based on specified argument
+				if (!settings.provinces || settings.provinces.indexOf(provinceShort) !== -1) {
+					canadaLayer.append("path")
+						.datum(topojson.feature(canada, canada.objects[province]))
+						.attr("class", provinceShort)
+						.attr("d", path);
+
+					rtnObj.provinces[provinceShort] = {
+						zoom: zoom.bind(rtnObj, provinceShort)
+					};
+				}
+			}
+
+			rtnObj.obj = canadaLayer;
+			rtnObj._bBox = canadaLayer.node().getBBox();
+			rtnObj.zoom = zoom.bind(rtnObj);
+
+			rtnObj.zoom();
+
+			dispatch.call("loaded", rtnObj);
+		} catch(e) {
+			return dispatch.call("error", rtnObj, e);
+		}
 	});
 
 	return rtnObj;
