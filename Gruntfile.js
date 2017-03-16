@@ -1,9 +1,13 @@
 /* eslint-env node */
 module.exports = function(grunt) {
 	// load all grunt tasks matching the ['grunt-*', '@*/grunt-*'] patterns
-	require("load-grunt-tasks")(grunt);
+	require("load-grunt-tasks")(grunt, {pattern: ["grunt-*", "gruntify-*"]});
 
 	grunt.initConfig({
+		eslint: {
+			src: ["src/*.js"]
+		},
+
 		connect: {
 			options: {
 				base: "."
@@ -49,5 +53,5 @@ module.exports = function(grunt) {
 		}
 	});
 	grunt.registerTask("test", ["connect:test", "mocha"]);
-	grunt.registerTask("default", ["test", "copy", "uglify"]);
+	grunt.registerTask("default", ["eslint", "test", "copy", "uglify"]);
 };
