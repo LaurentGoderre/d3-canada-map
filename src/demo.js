@@ -58,7 +58,7 @@ var map = d3.select(".dashboard .map")
 			window.console.log("Zoom:" + text);
 		});
 
-setInterval(function() {
+/*setInterval(function() {
 	var provinces = Object.keys(canada.provinces),
 		provincesLength = provinces.length,
 		show = Math.floor(Math.random() * (provincesLength + 1)),
@@ -70,4 +70,4 @@ setInterval(function() {
 	} else {
 		canada.zoom();
 	}
-}, 2000);
+}, 2000);*/

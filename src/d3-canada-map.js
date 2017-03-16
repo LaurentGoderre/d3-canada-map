@@ -93,5 +93,18 @@ this.getCanadaMap = function(svg, settings) {
 		}
 	});
 
+	d3.json("/data/16-cma-digital-arcgis_e.topo-quantized.json", function(error, canada) {
+		var layer = svg.append("g")
+				.attr("transform", "scale(0.1)")
+				.attr("class", "cma");
+
+		layer.selectAll(".path")
+			.data(topojson.feature(canada, canada.objects["16-cma-digital-arcgis_e"]).features)
+			.enter()
+			.append("path")
+				.attr("d", path);
+
+	});
+
 	return rtnObj;
 };
