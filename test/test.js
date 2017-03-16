@@ -1,12 +1,16 @@
 /* eslint-env mocha */
 /* global getCanadaMap, expect */
+var defaults = {
+	baseMap: "/data/canada.json"
+};
+
 describe("Calling getCanadaMap with default settings", function() {
 	var svg, canada;
 
 	before(function(done){
 		svg = d3.select("body")
 			.append("svg");
-		canada = getCanadaMap(svg);
+		canada = getCanadaMap(svg, defaults);
 		canada
 		.on("error", function(error) {
 			done(error);
@@ -111,7 +115,7 @@ describe("Zoom on a province", function(){
 	before(function(done){
 		svg = d3.select("body")
 			.append("svg");
-		canada = getCanadaMap(svg);
+		canada = getCanadaMap(svg, defaults);
 		canada
 		.on("error", function(error) {
 			done(error);
@@ -160,7 +164,7 @@ describe("Zoom on Canada", function(){
 	before(function(done){
 		svg = d3.select("body")
 			.append("svg");
-		canada = getCanadaMap(svg);
+		canada = getCanadaMap(svg, defaults);
 		canada
 		.on("error", function(error) {
 			done(error);
@@ -200,6 +204,7 @@ describe("Limitting the displayed provinces", function() {
 		svg = d3.select("body")
 			.append("svg");
 		canada = getCanadaMap(svg, {
+			baseMap: defaults.baseMap,
 			provinces: ["ON", "QC"]
 		});
 		canada
@@ -250,6 +255,7 @@ describe("Custom projection", function() {
 		svg = d3.select("body")
 			.append("svg");
 		canada = getCanadaMap(svg, {
+			baseMap: defaults.baseMap,
 			projection: d3.geoEquirectangular().rotate([95,0])
 		});
 		canada
