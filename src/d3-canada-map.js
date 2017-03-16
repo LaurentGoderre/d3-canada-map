@@ -5,7 +5,7 @@ this.getCanadaMap = function(svg, settings) {
 			var getRatio = function(bBox) {
 					return bBox.width * 1.0 / bBox.height;
 				},
-				getbBoxCorrected = function(origin, reference) {console.log(JSON.stringify(origin));
+				getbBoxCorrected = function(origin, reference) {
 					var newbBox = {
 							x: origin.x,
 							y: origin.y,
