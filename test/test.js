@@ -135,10 +135,6 @@ describe("Zoom on a province", function(){
 		canada.provinces.ON.zoom();
 	});
 
-	it("should change the viewBox to cover only the province", function() {
-		expect(canada.svg.attr("viewBox")).to.equal("479.7120056152344 91.65025329589844 40.736602783203125 40.73939514160156");
-	});
-
 	it("should add the 'zoomed' class to the canada layer", function() {
 		expect(canada.svg.select(".canada-map").attr("class")).to.contain("zoomed");
 	});
@@ -154,6 +150,19 @@ describe("Zoom on a province", function(){
 			height: 40.73939514160156,
 			width: 40.736602783203125
 		});
+	});
+
+	it("should cache a viewBox for the province corrected to match the map's original aspect ratio", function() {
+		expect(canada.provinces.ON._bBoxCorrected).to.deep.equal({
+			x: 475.36426960189146,
+			y: 91.65025329589844,
+			height: 40.73939514160156,
+			width: 49.43207480988898
+		});
+	});
+
+	it("should change the viewBox to cover only the province, preserving the original aspect ratio", function() {
+		expect(canada.svg.attr("viewBox")).to.equal("475.36426960189146 91.65025329589844 49.432074809888974 40.73939514160156");
 	});
 });
 

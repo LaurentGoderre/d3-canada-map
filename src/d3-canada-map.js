@@ -2,19 +2,48 @@
 this.getCanadaMap = function(svg, settings) {
 	var dispatch = d3.dispatch("loaded", "zoom", "error"),
 		zoom = function(province) {
-			var transition = d3.transition()
+			var getRatio = function(bBox) {
+					return bBox.width * 1.0 / bBox.height;
+				},
+				getbBoxCorrected = function(origin, reference) {console.log(JSON.stringify(origin));
+					var newbBox = {
+							x: origin.x,
+							y: origin.y,
+							width: origin.width,
+							height: origin.height
+						},
+						originRatio = getRatio(origin),
+						referenceRatio = getRatio(reference),
+						newValue, oldValue;
+					if (originRatio > referenceRatio) {
+						// Origin bounding box is wider than reference
+						newValue = origin.width / referenceRatio;
+						oldValue = origin.height;
+						newbBox.height = newValue;
+						newbBox.y = origin.y - (newValue - oldValue) / 2;
+					} else if (originRatio < referenceRatio) {
+						//Origin bounding box is higher than reference
+						newValue = origin.height * referenceRatio;
+						oldValue = origin.width;
+						newbBox.width = newValue;
+						newbBox.x = origin.x - (newValue - oldValue) / 2;
+					}
+					return newbBox;
+				},
+				transition = d3.transition()
 					.duration(1000),
 				boundingBox, provincePath;
 
 			this.svg.selectAll(".zoomed").classed("zoomed", false);
 
 			if (province) {
-				if (this.provinces[province]._bBox) {
+				if (this.provinces[province]._bBoxCorrected) {
 					provincePath = this.provinces[province].obj;
-					boundingBox = this.provinces[province]._bBox;
+					boundingBox = this.provinces[province]._bBoxCorrected;
 				} else {
 					provincePath = this.provinces[province].obj = this.svg.select("." + province);
-					boundingBox = this.provinces[province]._bBox = (provincePath.node().getBBox());
+					this.provinces[province]._bBox = (provincePath.node().getBBox());
+					boundingBox = this.provinces[province]._bBoxCorrected = getbBoxCorrected(this.provinces[province]._bBox, this._bBox);
 				}
 				provincePath.classed("zoomed", true);
 				this.obj.classed("zoomed", true);
