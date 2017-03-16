@@ -26,7 +26,7 @@ this.getCanadaMap = function(svg, settings) {
 					dispatch.call("zoom", this, province);
 				});
 		},
-		rtnObj;
+		rtnObj, projection, path;
 
 	settings = settings || {};
 
@@ -44,6 +44,12 @@ this.getCanadaMap = function(svg, settings) {
 		settings.provinces = [settings.provinces];
 	}
 
+	projection = settings.projection = settings.projection ||
+		d3.geoTransverseMercator()
+			.rotate([95,0]);
+	path = d3.geoPath()
+		.projection(projection);
+
 	d3.json("/data/canada.json", function(error, canada) {
 		if (error) {
 			if (error instanceof Error) {
@@ -56,13 +62,7 @@ this.getCanadaMap = function(svg, settings) {
 			var canadaLayer = svg.append("g")
 					.attr("class", "canada-map"),
 				provincesKeys = Object.keys(canada.objects),
-				province, provinceShort, p, projection, path;
-
-			projection = settings.projection = settings.projection ||
-				d3.geoTransverseMercator()
-					.rotate([95,0]);
-			path = d3.geoPath()
-				.projection(projection);
+				province, provinceShort, p;
 
 			for(p = 0; p < provincesKeys.length; p += 1) {
 				province = provincesKeys[p];
