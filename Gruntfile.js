@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 		copy: {
 			js: {
 				files: {
-					"dest/d3-canada-map.js": "src/d3-canada-map.js"
+					"dist/d3-canada-map.js": "src/d3-canada-map.js"
 				}
 			}
 		},
@@ -47,7 +47,7 @@ module.exports = function(grunt) {
 			},
 			all: {
 				files: {
-					"dest/d3-canada-map.min.js": "dest/d3-canada-map.js"
+					"dist/d3-canada-map.min.js": "dist/d3-canada-map.js"
 				}
 			}
 		}
