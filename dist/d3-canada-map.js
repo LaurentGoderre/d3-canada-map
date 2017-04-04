@@ -1,6 +1,8 @@
 /* exported getCanadaMap */
 this.getCanadaMap = function(svg, settings) {
-	var dispatch = d3.dispatch("loaded", "zoom", "error"),
+	var canadaLayer = svg.append("g")
+			.attr("class", "canada-map"),
+		dispatch = d3.dispatch("loaded", "zoom", "error"),
 		zoom = function(province) {
 			var getRatio = function(bBox) {
 					return bBox.width * 1.0 / bBox.height;
@@ -64,9 +66,7 @@ this.getCanadaMap = function(svg, settings) {
 				}
 			}
 			try {
-				var canadaLayer = svg.append("g")
-						.attr("class", "canada-map"),
-					provincesKeys = Object.keys(canada.objects),
+				var provincesKeys = Object.keys(canada.objects),
 					province, provinceShort, p;
 
 				for(p = 0; p < provincesKeys.length; p += 1) {
