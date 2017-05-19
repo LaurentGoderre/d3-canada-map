@@ -3,6 +3,53 @@ this.getCanadaMap = function(svg, settings) {
 	var canadaLayer = svg.append("g")
 			.attr("class", "canada-map"),
 		dispatch = d3.dispatch("loaded", "zoom", "error"),
+		onError = function(error) {
+			if (error) {
+				if (error instanceof Error) {
+					return dispatch.call("error", rtnObj, error);
+				} else if (error instanceof ProgressEvent) {
+					return dispatch.call("error", rtnObj, new Error("Could not load the map file (" + error.target.status + " " + error.target.statusText + ")"));
+				}
+			}
+		},
+		loadLayers = function() {
+			var done = function() {
+					dispatch.call("loaded", rtnObj);
+				},
+				loadOtherLayers = function() {
+					var q = d3.queue(),
+						layerCallback = function(error, data) {
+							onError(error);
+							this.data = data;
+							createAdditionalLayer(this);
+						},
+						l, layer;
+
+					for (l = 0; l < settings.additonalLayers.length; l++) {
+						layer = settings.additonalLayers[l];
+						if (layer.data) {
+							createAdditionalLayer(layer);
+						} else if (layer.url){
+							q.defer(d3.json, layer.url, layerCallback.bind(layer));
+						}
+					}
+					q.await(done);
+				},
+				cb = done;
+
+			if (settings.additonalLayers && settings.additonalLayers.length > 0) {
+				cb = loadOtherLayers;
+			}
+
+			if (typeof settings.baseMap === "object") {
+				createBaseMap(settings.baseMap, cb);
+			} else {
+				d3.json(settings.baseMap, function(error, data) {
+					onError(error);
+					createBaseMap(data, cb);
+				});
+			}
+		},
 		zoom = function(province) {
 			var getRatio = function(bBox) {
 					return bBox.width * 1.0 / bBox.height;
@@ -57,14 +104,7 @@ this.getCanadaMap = function(svg, settings) {
 					dispatch.call("zoom", this, province);
 				});
 		},
-		baseMapCallback = function(error, canada) {
-			if (error) {
-				if (error instanceof Error) {
-					return dispatch.call("error", rtnObj, error);
-				} else if (error instanceof ProgressEvent) {
-					return dispatch.call("error", rtnObj, new Error("Could not load the map file (" + error.target.status + " " + error.target.statusText + ")"));
-				}
-			}
+		createBaseMap = function(canada, cb) {
 			try {
 				var provincesKeys = Object.keys(canada.objects),
 					province, provinceShort, p;
@@ -92,9 +132,24 @@ this.getCanadaMap = function(svg, settings) {
 
 				rtnObj.zoom();
 
-				dispatch.call("loaded", rtnObj);
+				if (cb && typeof cb === "function") {
+					cb();
+				}
 			} catch(e) {
 				return dispatch.call("error", rtnObj, e);
+			}
+		},
+		createAdditionalLayer = function(layer) {
+			var layerGroup = svg.append("g")
+					.attr("class", layer.name),
+				features = layer.getObjects(layer.data),
+				f;
+
+			for (f = 0; f < features.length; f++) {
+				layerGroup.append("path")
+					.datum(topojson.feature(layer.data, features[f]))
+					.attr("d", path)
+					.attr("class", layer.getClass ? layer.getClass(features[f]) : "");
 			}
 		},
 		rtnObj, projection, path;
@@ -125,11 +180,7 @@ this.getCanadaMap = function(svg, settings) {
 	path = d3.geoPath()
 		.projection(projection);
 
-	if (typeof settings.baseMap === "object") {
-		baseMapCallback(null, settings.baseMap);
-	} else {
-		d3.json(settings.baseMap, baseMapCallback);
-	}
+	loadLayers();
 
 	return rtnObj;
 };

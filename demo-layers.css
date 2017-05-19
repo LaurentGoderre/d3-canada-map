@@ -1,0 +1,15 @@
+.canada-map path, .canada-er path {
+	fill: #94a6b2;
+	stroke: #fff;
+	stroke-width: 0.03;
+	transition: opacity 1s ease-in-out;
+}
+
+.canada-er path {
+	fill: #f00;
+	opacity: .5;
+}
+
+.canada-map.zoomed path:not(.zoomed) {
+	opacity: 0.4;
+}
