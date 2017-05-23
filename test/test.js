@@ -127,7 +127,7 @@ describe("Zoom on a province", function(){
 		svg.remove();
 	});
 
-	it("trigger a zoom event", function(done) {
+	it("should trigger a zoom event", function(done) {
 		canada.on("zoom", function(province) {
 			expect(province).to.equal("ON");
 			done();
@@ -185,7 +185,7 @@ describe("Zoom on Canada", function(){
 		svg.remove();
 	});
 
-	it("trigger a zoom event", function(done) {
+	it("should trigger a zoom event", function(done) {
 		canada.on("zoom", function(province) {
 			expect(province).to.equal(undefined);
 			done();
@@ -297,5 +297,11 @@ describe("Custom projection", function() {
 		expect(canada.svg.select(".NT").attr("d").match(regexp)[0]).to.equal("M372.21863112034845,");
 		expect(canada.svg.select(".BC").attr("d").match(regexp)[0]).to.equal("M404.9908258036369,");
 		expect(canada.svg.select(".SK").attr("d").match(regexp)[0]).to.equal("M462.7894881222238,");
+	});
+});
+
+describe.skip("Additonal Layers", function() {
+	it.skip("should have tests", function() {
+
 	});
 });
