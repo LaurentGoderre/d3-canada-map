@@ -105,23 +105,43 @@ this.getCanadaMap = function(svg, settings) {
 				});
 		},
 		createBaseMap = function(canada, cb) {
+			var provinces = (settings.getProvinces || function() {
+				var keys = Object.keys(canada.objects),
+					prReturn = {},
+					k, key, root;
+
+				if (keys.length > 1) {
+					for (k = 0; k < keys.length; k++) {
+						key = keys[k];
+
+						prReturn[key.substr(-2)] = canada.objects[key];
+					}
+				} else if (keys.length === 1){
+					root = canada.objects[keys[0]].geometries;
+
+					for (k = 0; k < root.length; k++) {
+						key = root[k].properties.PRCODE;
+
+						prReturn[key.substr(-2)] = root[k];
+					}
+				}
+
+				return prReturn;
+			})(canada);
 			try {
-				var provincesKeys = Object.keys(canada.objects),
-					province, provinceShort, p;
+				var provincesKeys = Object.keys(provinces),
+					p, provinceKey;
 
 				for(p = 0; p < provincesKeys.length; p += 1) {
-					province = provincesKeys[p];
-					provinceShort = province.substr(3);
-
-					//Filter provinces based on specified argument
-					if (!settings.provinces || settings.provinces.indexOf(provinceShort) !== -1) {
+					provinceKey = provincesKeys[p];
+					if (!settings.provinces || settings.provinces.indexOf(provinceKey) !== -1) {
 						canadaLayer.append("path")
-							.datum(topojson.feature(canada, canada.objects[province]))
-							.attr("class", provinceShort)
+							.datum(topojson.feature(canada, provinces[provinceKey]))
+							.attr("class", provinceKey)
 							.attr("d", path);
 
-						rtnObj.provinces[provinceShort] = {
-							zoom: zoom.bind(rtnObj, provinceShort)
+						rtnObj.provinces[provinceKey] = {
+							zoom: zoom.bind(rtnObj, provinceKey)
 						};
 					}
 				}
