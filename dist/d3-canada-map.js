@@ -98,6 +98,9 @@ this.getCanadaMap = function(svg, settings) {
 				this.obj.classed("zoomed", true);
 			} else {
 				boundingBox = this._bBox;
+				if (svg.node().msContentZoomFactor && svg.attr("height") === null) {
+					svg.attr("height", boundingBox.height + boundingBox.x);
+				}
 			}
 			svg.transition(transition).attr("viewBox", [boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height].join(" "))
 				.on("end", function() {
